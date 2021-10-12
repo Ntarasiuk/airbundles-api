@@ -28,7 +28,7 @@ const Editor = ({ initialHtml, editable = false, name, formik }) => {
     }
   };
   return (
-    <div key={name} id={id}>
+    <div key={name} id={id} style={{ width: "100%" }}>
       {editable && isLayoutReady ? (
         <>
           <ReactQuill

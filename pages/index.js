@@ -74,7 +74,7 @@ export default function Home() {
               {(formik) => (
                 <>
                   <Grid.Container gap={2}>
-                    <Grid xs={12}>
+                    <Grid xs={24} sm={12}>
                       <div style={{ display: "flex", flexDirection: "column" }}>
                         <div style={{ display: "flex", flexDirection: "row" }}>
                           <Input
@@ -96,7 +96,7 @@ export default function Home() {
                         />
                       </div>
                     </Grid>
-                    <Grid xs={12}>
+                    <Grid xs={24} sm={12}>
                       {formik?.values && (
                         <>
                           <div
@@ -109,7 +109,7 @@ export default function Home() {
                                   formik?.values?.photo_url
                                 }
                                 title={formik?.values?.title}
-                                url={formik?.values?.link}
+                                url={formik?.values?.url}
                                 subtitle={formik?.values?.subtitle}
                               />
                             </div>

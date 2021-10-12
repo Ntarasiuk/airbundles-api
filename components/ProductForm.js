@@ -6,7 +6,7 @@ import Editor from "./Editor";
 function ProductForm({ formik, mutationOptions }) {
   const { data, error, loading } = useQuery(gql`
     query {
-      category {
+      category(order_by: { name: asc_nulls_last }) {
         id
         slug
         description
@@ -31,6 +31,49 @@ function ProductForm({ formik, mutationOptions }) {
     null;
   return (
     <Grid.Container gap={5} style={{ marginTop: 32 }}>
+      <Grid xs={24}>
+        {formik?.values?.set_id && (
+          <div>
+            <div style={{ display: "block" }}>
+              <Text p b>
+                {selectedCategory?.name}
+              </Text>
+              <Text p>{selectedSet?.title}</Text>
+            </div>
+            <Button
+              type="error-light"
+              ghost
+              onClick={() => formik?.setFieldValue("set_id", null)}
+            >
+              Clear Set
+            </Button>
+          </div>
+        )}
+
+        {data?.category && !formik?.values?.set_id && (
+          <Select
+            placeholder="Set"
+            width="100%"
+            name="set"
+            value={formik?.values?.set}
+            onChange={(value = "") => {
+              formik.setFieldValue("category_id", value?.split("|")?.[0] || "");
+              formik.setFieldValue("set_id", value?.split("|")?.[1] || "");
+            }}
+          >
+            {(data?.category || [])?.map((cat) => (
+              <>
+                <Select.Option label>{cat.name}</Select.Option>
+                {cat?.sets.map((set) => (
+                  <Select.Option value={`${cat?.id}|${set?.id}`}>
+                    {set?.title}
+                  </Select.Option>
+                ))}
+              </>
+            ))}
+          </Select>
+        )}
+      </Grid>
       <Grid xs={24}>
         <Input
           width="100%"
@@ -106,49 +149,7 @@ function ProductForm({ formik, mutationOptions }) {
           ASIN
         </Input>
       </Grid>
-      <Grid xs={24}>
-        {formik?.values?.set_id && (
-          <div>
-            <div style={{ display: "block" }}>
-              <Text p b>
-                {selectedCategory?.name}
-              </Text>
-              <Text p>{selectedSet?.title}</Text>
-            </div>
-            <Button
-              type="error-light"
-              ghost
-              onClick={() => formik?.setFieldValue("set_id", null)}
-            >
-              Clear Set
-            </Button>
-          </div>
-        )}
 
-        {data?.category && !formik?.values?.set_id && (
-          <Select
-            placeholder="Set"
-            width="100%"
-            name="set"
-            value={formik?.values?.set}
-            onChange={(value = "") => {
-              formik.setFieldValue("category_id", value?.split("|")?.[0] || "");
-              formik.setFieldValue("set_id", value?.split("|")?.[1] || "");
-            }}
-          >
-            {(data?.category || [])?.map((cat) => (
-              <>
-                <Select.Option label>{cat.name}</Select.Option>
-                {cat?.sets.map((set) => (
-                  <Select.Option value={`${cat?.id}|${set?.id}`}>
-                    {set?.title}
-                  </Select.Option>
-                ))}
-              </>
-            ))}
-          </Select>
-        )}
-      </Grid>
       <Grid xs={24} justify="flex-end">
         <Button
           disabled={!formik?.values?.set_id}
