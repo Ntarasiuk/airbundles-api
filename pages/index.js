@@ -62,10 +62,7 @@ export default function Home() {
 
         <main>
           <Card width="100%">
-            <h1>
-              Welcome to the <a href="https://airbundles.com">AirBundles</a>{" "}
-              Admin panel
-            </h1>
+            <h1>Add Product</h1>
             <Formik
               initialValues={amazonInfo}
               enableReinitialize
