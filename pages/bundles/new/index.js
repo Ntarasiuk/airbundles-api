@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { Badge, Card, Grid, Spacer, useTheme } from "@geist-ui/react";
 import BundleCard from "components/BundleCard";
 import BundleForm from "components/BundleForm";
@@ -6,73 +6,50 @@ import Layout from "components/Layout";
 import { Formik } from "formik";
 import { useRouter } from "next/dist/client/router";
 import Head from "next/head";
-import toast from "react-hot-toast";
 
-function editBundle() {
-  const { query } = useRouter();
+function newBundle() {
+  const router = useRouter();
   const theme = useTheme();
-  console.log(query);
-  const SET_QUERY = gql`
-    query Set($id: Int!) {
-      set_by_pk(id: $id) {
-        id
-        category_id
-        cover_image
-        object_position
-        description
-        subtitle
-        title
-        is_airbnb_plus
-      }
-    }
-  `;
-  const { data, loading, error } = useQuery(SET_QUERY, {
-    variables: {
-      id: query?.id,
-    },
-  });
 
-  const bundle = data?.set_by_pk;
-  const refetchQueries = [
-    {
-      query: SET_QUERY,
-      variables: {
-        id: query?.id,
-      },
-    },
-  ];
+  const bundle = {
+    title: "",
+    description: "",
+    object_position: "",
+    subtitle: "",
+    cover_image: "",
+    category_id: "",
+    is_airbnb_plus: false,
+  };
 
-  const [updateBundle, mutationOptions] = useMutation(
+  const [insertBundle, mutationOptions] = useMutation(
     gql`
-      mutation updateBundle($id: Int!, $object: set_set_input!) {
-        update_set_by_pk(pk_columns: { id: $id }, _set: $object) {
+      mutation insertSet($object: set_insert_input!) {
+        insert_set_one(object: $object) {
           id
         }
       }
-    `,
-    { refetchQueries }
+    `
   );
 
   const handleSubmit = async (values, actions) => {
-    if (values?.id) {
-      const updatedBundle = await updateBundle({
-        variables: {
-          id: values.id,
-          object: {
-            title: values?.title || "",
-            description: values?.description || "",
-            object_position: values?.object_position || "",
-            subtitle: values?.subtitle || "",
-            cover_image: values?.cover_image || "",
-            category_id: values?.category_id || "",
-            is_airbnb_plus: values?.is_airbnb_plus || false,
-          },
+    const newBundle = await insertBundle({
+      variables: {
+        object: {
+          title: values?.title || "",
+          description: values?.description || "",
+          object_position: values?.object_position || "",
+          subtitle: values?.subtitle || "",
+          cover_image: values?.cover_image || "",
+          category_id: values?.category_id || "",
+          is_airbnb_plus: values?.is_airbnb_plus || false,
         },
-      });
-      if (updatedBundle) {
-        actions.resetForm();
-        return toast.success("updated bundle!");
-      }
+      },
+    });
+    if (newBundle) {
+      actions.resetForm();
+      return router.push(
+        `/bundles/edit/${newBundle?.data?.insert_set_one?.id}`
+      );
     }
   };
   return (
@@ -86,7 +63,7 @@ function editBundle() {
 
         <main>
           <Card width="100%">
-            <h1>Edit Bundle</h1>
+            <h1>New Bundle</h1>
             <Formik
               initialValues={bundle}
               enableReinitialize
@@ -152,4 +129,4 @@ function editBundle() {
   );
 }
 
-export default editBundle;
+export default newBundle;

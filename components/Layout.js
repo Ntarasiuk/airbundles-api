@@ -21,12 +21,17 @@ function Layout({ children }) {
 
         <Page.Content>
           <Grid.Container gap={2} style={{ marginBottom: 24 }}>
-            <Grid xs={12} sm={6}>
+            <Grid xs={12} sm={6} md={4}>
               <Link href="/">
                 <Button>Add Product</Button>
               </Link>
             </Grid>
-            <Grid xs={12} sm={6}>
+            <Grid xs={12} sm={6} md={4}>
+              <Link href="/bundles/new">
+                <Button>Add Bundle</Button>
+              </Link>
+            </Grid>
+            <Grid xs={12} sm={6} md={4}>
               <Link href="/bundles">
                 <Button>Bundles</Button>
               </Link>

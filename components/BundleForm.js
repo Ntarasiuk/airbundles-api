@@ -57,6 +57,18 @@ function BundleForm({ formik, mutationOptions }) {
           </Select>
         )}
       </Grid>
+
+      <Grid xs={24}>
+        <Input
+          width="100%"
+          placeholder="Cover Image"
+          name="cover_image"
+          onChange={formik.handleChange}
+          value={formik?.values?.cover_image || ""}
+        >
+          Cover Photo
+        </Input>
+      </Grid>
       <Grid xs={24}>
         <Input
           width="100%"
@@ -121,18 +133,6 @@ function BundleForm({ formik, mutationOptions }) {
         >
           Is Airbnb Plus?
         </Checkbox>
-      </Grid>
-
-      <Grid xs={24}>
-        <Input
-          width="100%"
-          placeholder="Cover Image (optional)"
-          name="cover_image"
-          onChange={formik.handleChange}
-          value={formik?.values?.cover_image || ""}
-        >
-          Cover Photo (optional)
-        </Input>
       </Grid>
 
       <Grid xs={24} justify="flex-end">
